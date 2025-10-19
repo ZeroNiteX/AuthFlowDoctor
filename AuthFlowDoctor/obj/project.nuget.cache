@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "dgSpecHash": "r8JioM0dlSs=",
+  "success": true,
+  "projectFilePath": "/Users/huseyinsarikaya/Documents/GitHub/AuthFlowDoctor/AuthFlowDoctor/AuthFlowDoctor.csproj",
+  "expectedPackageFiles": [
+    "/Users/huseyinsarikaya/.nuget/packages/microsoft.dotnet.ilcompiler/8.0.14/microsoft.dotnet.ilcompiler.8.0.14.nupkg.sha512",
+    "/Users/huseyinsarikaya/.nuget/packages/microsoft.identitymodel.abstractions/7.6.1/microsoft.identitymodel.abstractions.7.6.1.nupkg.sha512",
+    "/Users/huseyinsarikaya/.nuget/packages/microsoft.identitymodel.jsonwebtokens/7.6.1/microsoft.identitymodel.jsonwebtokens.7.6.1.nupkg.sha512",
+    "/Users/huseyinsarikaya/.nuget/packages/microsoft.identitymodel.logging/7.6.1/microsoft.identitymodel.logging.7.6.1.nupkg.sha512",
+    "/Users/huseyinsarikaya/.nuget/packages/microsoft.identitymodel.tokens/7.6.1/microsoft.identitymodel.tokens.7.6.1.nupkg.sha512",
+    "/Users/huseyinsarikaya/.nuget/packages/microsoft.net.illink.tasks/8.0.14/microsoft.net.illink.tasks.8.0.14.nupkg.sha512",
+    "/Users/huseyinsarikaya/.nuget/packages/system.identitymodel.tokens.jwt/7.6.1/system.identitymodel.tokens.jwt.7.6.1.nupkg.sha512",
+    "/Users/huseyinsarikaya/.nuget/packages/runtime.osx-arm64.microsoft.dotnet.ilcompiler/8.0.14/runtime.osx-arm64.microsoft.dotnet.ilcompiler.8.0.14.nupkg.sha512"
+  ],
+  "logs": []
+}

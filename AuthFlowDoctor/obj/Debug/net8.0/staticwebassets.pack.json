@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "Id": "/Users/huseyinsarikaya/Documents/GitHub/AuthFlowDoctor/AuthFlowDoctor/wwwroot/index.html",
+      "PackagePath": "staticwebassets/index.html"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.AuthFlowDoctor.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.build.AuthFlowDoctor.props",
+      "PackagePath": "build\\AuthFlowDoctor.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.AuthFlowDoctor.props",
+      "PackagePath": "buildMultiTargeting\\AuthFlowDoctor.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.AuthFlowDoctor.props",
+      "PackagePath": "buildTransitive\\AuthFlowDoctor.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

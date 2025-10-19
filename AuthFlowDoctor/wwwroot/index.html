@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AuthFlow Doctor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    pre{ white-space: pre-wrap; word-break: break-word; }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'ui-sans-serif','system-ui'] } } } };
+  </script>
+  <meta name="color-scheme" content="light dark">
+  <script>
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (prefersDark) document.documentElement.classList.add('dark');
+  </script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-950 dark:to-slate-900 text-slate-900 dark:text-slate-100">
+  <div class="max-w-7xl mx-auto p-6">
+    <header class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-3xl font-bold tracking-tight">AuthFlow Doctor</h1>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">JWT, Cookies ve Fetch akışlarını hızlıca test edin.</p>
+      </div>
+      <button id="toggleTheme" class="rounded-full border border-slate-300 dark:border-slate-700 px-3 py-1.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-800 transition">Toggle theme</button>
+    </header>
+    <div class="mb-5 flex gap-1 border-b border-slate-200 dark:border-slate-800">
+      <button class="tab px-4 py-2 -mb-px border-b-2 border-blue-600 text-blue-700 dark:text-blue-400 font-medium" data-tab="jwt">JWT</button>
+      <button class="tab px-4 py-2 -mb-px border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200" data-tab="cookie">Cookie</button>
+      <button class="tab px-4 py-2 -mb-px border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200" data-tab="fetch">Fetch Test</button>
+      <button class="tab px-4 py-2 -mb-px border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200" data-tab="snippets">Snippets</button>
+    </div>
+
+    <section id="tab-jwt" class="space-y-4">
+      <div class="grid gap-6 md:grid-cols-2">
+        <div class="bg-white/70 dark:bg-slate-900/60 backdrop-blur rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+          <h2 class="font-semibold mb-2">Issue JWT</h2>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="col-span-1">Alg
+              <select id="alg" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700">
+                <option>HS256</option>
+                <option>RS256</option>
+              </select>
+            </label>
+            <label class="col-span-1">expMinutes
+              <input id="expMinutes" type="number" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700" value="60" />
+            </label>
+            <label class="col-span-1">sub
+              <input id="sub" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700" />
+            </label>
+            <label class="col-span-1">aud
+              <input id="aud" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700" />
+            </label>
+            <label class="col-span-1">iss
+              <input id="iss" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700" />
+            </label>
+            <label class="col-span-1">nbfOffset (sec)
+              <input id="nbfOffset" type="number" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700" />
+            </label>
+            <label class="col-span-2">secret (HS256)
+              <input id="secret" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700" placeholder="optional" />
+            </label>
+            <label class="col-span-2">RS256 privateKeyPem
+              <textarea id="privateKeyPem" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700" rows="4" placeholder="Paste PKCS#8 PEM"></textarea>
+            </label>
+            <label class="col-span-2">kid
+              <input id="kid" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700" placeholder="optional" />
+            </label>
+          </div>
+          <div class="mt-4 flex gap-2">
+            <button id="btnIssue" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md transition">Issue</button>
+            <button data-copy="issuedToken" class="px-3 py-2 rounded-md border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition">Copy token</button>
+          </div>
+          <div class="mt-3 text-sm text-slate-600 dark:text-slate-400">Need RS256 keys? <button id="btnGenKeys" class="underline">Generate demo pair</button></div>
+          <pre id="issueResult" class="mt-3 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg text-sm font-mono"></pre>
+        </div>
+
+        <div class="bg-white/70 dark:bg-slate-900/60 backdrop-blur rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+          <h2 class="font-semibold mb-2">Verify JWT</h2>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="col-span-2">token
+              <textarea id="verifyToken" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700" rows="3"></textarea>
+            </label>
+            <label>Alg
+              <select id="verifyAlg" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700">
+                <option>HS256</option>
+                <option>RS256</option>
+              </select>
+            </label>
+            <label>secret/publicKeyPem
+              <textarea id="verifyKey" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700" rows="3" placeholder="HS secret or RS public PEM"></textarea>
+            </label>
+            <label>aud
+              <input id="verifyAud" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700" />
+            </label>
+            <label>iss
+              <input id="verifyIss" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700" />
+            </label>
+            <label>clockSkewSec
+              <input id="verifySkew" type="number" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700" placeholder="120" />
+            </label>
+          </div>
+          <div class="mt-4 flex gap-2">
+            <button id="btnVerify" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-md transition">Verify</button>
+            <button data-copy="verifyResult" class="px-3 py-2 rounded-md border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition">Copy result</button>
+          </div>
+          <pre id="verifyResult" class="mt-3 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg text-sm font-mono"></pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-cookie" class="hidden space-y-4">
+      <div class="grid gap-6 md:grid-cols-2">
+        <div class="bg-white/70 dark:bg-slate-900/60 backdrop-blur rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+          <h2 class="font-semibold mb-2">Set Cookie</h2>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="col-span-1">name
+              <input id="ckName" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700" value="demo" />
+            </label>
+            <label class="col-span-1">value
+              <input id="ckValue" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700" value="123" />
+            </label>
+            <label class="col-span-1">sameSite
+              <select id="ckSameSite" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700">
+                <option>Lax</option>
+                <option>Strict</option>
+                <option>None</option>
+              </select>
+            </label>
+            <label class="col-span-1">secure
+              <input id="ckSecure" type="checkbox" class="ml-2 align-middle" />
+            </label>
+            <label class="col-span-1">httpOnly
+              <input id="ckHttpOnly" type="checkbox" class="ml-2 align-middle" checked />
+            </label>
+            <label class="col-span-1">domain
+              <input id="ckDomain" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700" />
+            </label>
+            <label class="col-span-1">path
+              <input id="ckPath" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700" value="/" />
+            </label>
+            <label class="col-span-1">maxAgeSeconds
+              <input id="ckMaxAge" type="number" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700" />
+            </label>
+          </div>
+          <div class="text-xs text-amber-700 dark:text-amber-400 mt-2">Note: SameSite=None requires Secure=true for modern browsers.</div>
+          <div class="mt-4 flex gap-2">
+            <button id="btnSetCookie" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md transition">Set</button>
+            <button id="btnClearCookie" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-2 rounded-md transition">Clear</button>
+          </div>
+          <pre id="cookieSetResult" class="mt-3 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg text-sm font-mono"></pre>
+        </div>
+
+        <div class="bg-white/70 dark:bg-slate-900/60 backdrop-blur rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+          <h2 class="font-semibold mb-2">Check Cookies</h2>
+          <div class="mt-2">
+            <button id="btnCheckCookie" class="bg-slate-800 hover:bg-slate-900 text-white px-3 py-2 rounded-md transition">Check</button>
+            <button data-copy="cookieCheckResult" class="px-3 py-2 rounded-md border border-slate-300 dark:border-slate-700 ml-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition">Copy</button>
+          </div>
+          <pre id="cookieCheckResult" class="mt-3 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg text-sm font-mono"></pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-fetch" class="hidden space-y-4">
+      <div class="bg-white/70 dark:bg-slate-900/60 backdrop-blur rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+        <h2 class="font-semibold mb-2">Fetch Test</h2>
+        <div class="grid grid-cols-2 gap-3">
+          <label class="col-span-2">URL
+            <input id="ftUrl" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700" value="/echo/headers" />
+          </label>
+          <label>method
+            <input id="ftMethod" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700" value="GET" />
+          </label>
+          <label>credentials
+            <select id="ftCreds" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700">
+              <option>omit</option>
+              <option>same-origin</option>
+              <option>include</option>
+            </select>
+          </label>
+          <label class="col-span-2">headers (key: value per line)
+            <textarea id="ftHeaders" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700" rows="3"></textarea>
+          </label>
+          <label class="col-span-2">body
+            <textarea id="ftBody" class="w-full border rounded-md p-2 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700" rows="4"></textarea>
+          </label>
+        </div>
+        <div class="mt-4">
+          <button id="btnSendFetch" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md transition">Send</button>
+          <button data-copy="fetchResult" class="px-3 py-2 rounded-md border border-slate-300 dark:border-slate-700 ml-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition">Copy</button>
+        </div>
+        <pre id="fetchResult" class="mt-3 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg text-sm font-mono"></pre>
+      </div>
+    </section>
+
+    <section id="tab-snippets" class="hidden space-y-4">
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-white/70 dark:bg-slate-900/60 backdrop-blur rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+          <h3 class="font-semibold mb-2">.NET CookiePolicyOptions</h3>
+          <pre class="text-sm bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg" id="sn-dotnet"></pre>
+          <button data-copy="sn-dotnet" class="mt-2 border border-slate-300 dark:border-slate-700 px-3 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition">Copy</button>
+        </div>
+        <div class="bg-white/70 dark:bg-slate-900/60 backdrop-blur rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+          <h3 class="font-semibold mb-2">NGINX proxy_cookie_flags</h3>
+          <pre class="text-sm bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg" id="sn-nginx"></pre>
+          <button data-copy="sn-nginx" class="mt-2 border border-slate-300 dark:border-slate-700 px-3 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition">Copy</button>
+        </div>
+        <div class="bg-white/70 dark:bg-slate-900/60 backdrop-blur rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+          <h3 class="font-semibold mb-2">Express cookie settings</h3>
+          <pre class="text-sm bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg" id="sn-express"></pre>
+          <button data-copy="sn-express" class="mt-2 border border-slate-300 dark:border-slate-700 px-3 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition">Copy</button>
+        </div>
+        <div class="bg-white/70 dark:bg-slate-900/60 backdrop-blur rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+          <h3 class="font-semibold mb-2">JWT Verify Checklist</h3>
+          <pre class="text-sm bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg" id="sn-jwt"></pre>
+          <button data-copy="sn-jwt" class="mt-2 border border-slate-300 dark:border-slate-700 px-3 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition">Copy</button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="text-xs text-slate-500 dark:text-slate-400 mt-10">v0.1.0</footer>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const tabs = document.querySelectorAll('.tab');
+    const sections = { jwt: 'tab-jwt', cookie: 'tab-cookie', fetch: 'tab-fetch', snippets: 'tab-snippets' };
+    tabs.forEach(t => t.addEventListener('click', () => {
+      tabs.forEach(x => {
+        x.classList.remove('border-blue-600','text-blue-700','dark:text-blue-400');
+        x.classList.add('border-transparent','text-slate-500','dark:text-slate-400');
+      });
+      t.classList.remove('border-transparent','text-slate-500','dark:text-slate-400');
+      t.classList.add('border-blue-600','text-blue-700','dark:text-blue-400');
+      Object.values(sections).forEach(id => document.getElementById(id).classList.add('hidden'));
+      document.getElementById('tab-' + t.dataset.tab).classList.remove('hidden');
+    }));
+
+    document.querySelectorAll('[data-copy]').forEach(btn => btn.addEventListener('click', () => {
+      const el = $(btn.getAttribute('data-copy'));
+      if (!el) return;
+      const text = el.tagName === 'TEXTAREA' || el.tagName === 'INPUT' ? el.value : el.textContent;
+      navigator.clipboard.writeText(text || '');
+    }));
+
+    const pretty = (obj) => JSON.stringify(obj, null, 2);
+
+    // Theme toggle
+    const toggle = document.getElementById('toggleTheme');
+    toggle?.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+    });
+
+    // JWT: Issue
+    $('btnIssue').onclick = async () => {
+      const req = {
+        alg: $('alg').value,
+        claims: {
+          sub: $('sub').value || null,
+          aud: $('aud').value || null,
+          iss: $('iss').value || null,
+          expMinutes: parseInt($('expMinutes').value || '60'),
+          nbfOffset: $('nbfOffset').value ? parseInt($('nbfOffset').value) : null
+        },
+        secret: $('secret').value || null,
+        privateKeyPem: $('privateKeyPem').value || null,
+        kid: $('kid').value || null
+      };
+      const res = await fetch('/jwt/issue', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(req) });
+      const data = await res.json();
+      $('issueResult').textContent = pretty(data);
+      window.issuedToken = data.token;
+      $('issuedToken')?.remove();
+    };
+
+    // Generate RS256 keys
+    $('btnGenKeys').onclick = async () => {
+      const res = await fetch('/jwt/keys/rs256');
+      const data = await res.json();
+      $('privateKeyPem').value = data.privateKeyPem;
+      $('verifyKey').value = data.publicKeyPem;
+    };
+
+    // JWT: Verify
+    $('btnVerify').onclick = async () => {
+      const req = {
+        token: $('verifyToken').value || window.issuedToken || '',
+        alg: $('verifyAlg').value,
+        secretOrPublicKeyPem: $('verifyKey').value || null,
+        aud: $('verifyAud').value || null,
+        iss: $('verifyIss').value || null,
+        clockSkewSec: $('verifySkew').value ? parseInt($('verifySkew').value) : null
+      };
+      const res = await fetch('/jwt/verify', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(req) });
+      const data = await res.json();
+      $('verifyResult').textContent = pretty(data);
+    };
+
+    // Cookie: Set
+    $('btnSetCookie').onclick = async () => {
+      const req = {
+        name: $('ckName').value,
+        value: $('ckValue').value,
+        domain: $('ckDomain').value || null,
+        path: $('ckPath').value || '/',
+        sameSite: $('ckSameSite').value,
+        secure: $('ckSecure').checked,
+        httpOnly: $('ckHttpOnly').checked,
+        maxAgeSeconds: $('ckMaxAge').value ? parseInt($('ckMaxAge').value) : null
+      };
+      const res = await fetch('/cookie/set', { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify(req) });
+      const data = await res.json();
+      $('cookieSetResult').textContent = pretty(data);
+    };
+
+    $('btnCheckCookie').onclick = async () => {
+      const res = await fetch('/cookie/check', { credentials:'include' });
+      const data = await res.json();
+      $('cookieCheckResult').textContent = pretty(data);
+    };
+
+    $('btnClearCookie').onclick = async () => {
+      const name = $('ckName').value; const domain = $('ckDomain').value; const path = $('ckPath').value || '/';
+      const url = new URL('/cookie/clear', location.origin);
+      url.searchParams.set('name', name);
+      if (domain) url.searchParams.set('domain', domain);
+      if (path) url.searchParams.set('path', path);
+      const res = await fetch(url, { credentials:'include' });
+      const data = await res.json();
+      $('cookieSetResult').textContent = pretty(data);
+    };
+
+    // Fetch Test
+    $('btnSendFetch').onclick = async () => {
+      const url = $('ftUrl').value;
+      const method = $('ftMethod').value || 'GET';
+      const creds = $('ftCreds').value || 'omit';
+      const headersTxt = $('ftHeaders').value.trim();
+      const headers = {};
+      headersTxt.split('\n').map(l => l.trim()).filter(Boolean).forEach(l => { const i = l.indexOf(':'); if (i>0) headers[l.slice(0,i).trim()] = l.slice(i+1).trim(); });
+      const body = $('ftBody').value;
+      const init = { method, credentials: creds, headers };
+      if (method.toUpperCase() !== 'GET' && body) init.body = body;
+      try{
+        const res = await fetch(url, init);
+        const text = await res.text();
+        $('fetchResult').textContent = text;
+      }catch(e){ $('fetchResult').textContent = String(e); }
+    };
+
+    // Snippets
+    $('sn-dotnet').textContent = `services.Configure<CookiePolicyOptions>(o => {\n  o.MinimumSameSitePolicy = SameSiteMode.None;\n});\napp.UseCookiePolicy();\n// Note: For cross-site cookies, use SameSite=None and Secure=true\n// Place auth middlewares in order: UseAuthentication() then UseAuthorization()`;
+
+    $('sn-nginx').textContent = `proxy_cookie_flags ~ HttpOnly secure SameSite=None;\n# Or set for a specific cookie name:\n# proxy_cookie_flags sessionid HttpOnly secure SameSite=None;`;
+
+    $('sn-express').textContent = `const cookieParser = require('cookie-parser');\napp.use(cookieParser());\nres.cookie('name', 'value', {\n  httpOnly: true,\n  secure: true, // required if SameSite=None\n  sameSite: 'none',\n  maxAge: 3600_000,\n  path: '/',\n  domain: undefined\n});`;
+
+    $('sn-jwt').textContent = `JWT Verify Checklist:\n- Prefer RS256 with key rotation (kid)\n- Always validate aud and iss\n- Enforce exp/nbf with small clock skew\n- Pin algorithm; do not accept alg=none`;
+  </script>
+</body>
+</html>
+
+

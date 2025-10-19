@@ -1,0 +1,39 @@
+{
+  "Version": 1,
+  "Hash": "ch/MegafhMoWkq5hbBLq2h+5063QjOJh7R2Q7XwgsHk=",
+  "Source": "AuthFlowDoctor",
+  "BasePath": "_content/AuthFlowDoctor",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "AuthFlowDoctor/wwwroot",
+      "Source": "AuthFlowDoctor",
+      "ContentRoot": "/Users/huseyinsarikaya/Documents/GitHub/AuthFlowDoctor/AuthFlowDoctor/wwwroot/",
+      "BasePath": "_content/AuthFlowDoctor",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "/Users/huseyinsarikaya/Documents/GitHub/AuthFlowDoctor/AuthFlowDoctor/wwwroot/index.html",
+      "SourceId": "AuthFlowDoctor",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/huseyinsarikaya/Documents/GitHub/AuthFlowDoctor/AuthFlowDoctor/wwwroot/",
+      "BasePath": "_content/AuthFlowDoctor",
+      "RelativePath": "index.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/index.html"
+    }
+  ]
+}
